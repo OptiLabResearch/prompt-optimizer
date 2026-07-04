@@ -8,8 +8,14 @@ compatibility_date = "2024-09-23"
 #
 # Plain vars for the hosted instance (safe to set in the Cloudflare dashboard):
 #   HOSTED_PROVIDER = "openrouter" | "nvidia"
-#   HOSTED_MODEL    = e.g. "deepseek/deepseek-chat-v3.1:free"
+#   HOSTED_MODEL    = e.g. "nvidia/nemotron-3-super-120b-a12b"
+#                     may be a comma-separated list; later entries are tried
+#                     in order if the first one errors out (rate limit, etc).
 #
 # When neither secret is set (e.g. a visitor's own `wrangler pages dev` or a
 # fork with no secrets configured), users must supply their own API key via
 # the in-page Settings panel — nothing works without one or the other.
+
+[vars]
+HOSTED_PROVIDER = "nvidia"
+HOSTED_MODEL = "z-ai/glm-5.2,minimaxai/minimax-m3,deepseek-ai/deepseek-v4-pro,moonshotai/kimi-k2.6,nvidia/nemotron-3-ultra-550b-a55b,deepseek-ai/deepseek-v4-flash"
