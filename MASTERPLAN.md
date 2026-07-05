@@ -355,7 +355,39 @@ highlighting) before starting Phase 2's rework, since it was never visually
 confirmed.
 ```
 
+```
+Handoff: Phase 2 → Phase 3
+
+Project path: /root/prompt-optimizer (git repo, branch: master)
+
+Project: A standalone prompt-optimization tool (Cloudflare Pages + Functions, no
+framework, no accounts/login). Users paste a raw prompt into public/index.html,
+hit Optimize, and get back a structured rewrite plus an explanation of what
+changed. Full context lives in MASTERPLAN.md at the repo root.
+
+What was completed this phase (Phase 2, "Core redesign" — see MASTERPLAN.md §3):
+- Single-column transformative layout: centered centered at 800px width. Swap screens between input panel and result panel with context bar.
+- Sectioned Output: Parsed headers (Role, Context, Task, Constraints, Output Format) to display inside individual color-coded accordions. Bullet point improvements from explanations are mapped inline in a "Why this changed" box.
+- Placeholder Input Chips: Detected placeholders match input chips with inline editing and gating. Copy button disabled until all placeholders filled (with bypass gate link).
+- Variable Sandbox: Populate central fields mapped to placeholders that compile the final template.
+- Inline Editing: Made sections contenteditable. Focus and blur actions safely parse HTML tree back to template variables.
+- Partitioned Diff View: computes word-diff results partitioned per section so differences are viewed locally inside each accordion.
+- Token Estimates: Added standard character/4 heuristic next to length indicators.
+- Configured local secret bindings: Created .dev.vars containing the NVIDIA, OpenRouter, and Google API keys so that running the wrangler dev server locally executes live API fetch tests successfully.
+
+Phase 3 task list:
+1. Library (upgrade of existing History, still localStorage — no accounts): named prompts, version chain per prompt (v1 → refined v2 → …), tags, search, re-open into the optimizer. History log remains as "recent runs."
+2. Test Bench elevation: own view/anchor, verdict strip comparing the two responses (length, structure, instruction-adherence heuristics), "save winner."
+3. Sample/preset catalog: 5–8 starter prompts (coding assistant, extractor, summarizer…) for first-run users (gemini v2's presets, scoped down).
+4. Optional export: download prompt as .md/.txt/JSON (with variables schema).
+
+Files to read first: MASTERPLAN.md, public/index.html, functions/_lib/optimizer.js, .dev.vars.
+
+How to run/verify: Run `npm run dev` to start wrangler pages local server at http://localhost:8788. Verify prompt optimizations fetch real responses using local secrets from `.dev.vars`.
+```
+
 ---
+
 
 # 4. Success metrics (merged from Fable + GLM, trimmed to measurable-without-accounts)
 
