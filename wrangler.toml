@@ -23,12 +23,17 @@ compatibility_date = "2024-09-23"
 # supply their own API key via the in-page Settings panel.
 
 [vars]
-HOSTED_PROVIDER = "nvidia,openrouter,google"
-# Ordered by IFBench (instruction-following) score, since that's what predicts
-# rewrite quality for this task — see choosing-a-model.md. Highest first.
-HOSTED_MODEL = "minimaxai/minimax-m3,nvidia/nemotron-3-ultra-550b-a55b,deepseek-ai/deepseek-v4-flash,deepseek-ai/deepseek-v4-pro,moonshotai/kimi-k2.6,z-ai/glm-5.1"
-HOSTED_MODEL_OPENROUTER = "nvidia/nemotron-3-ultra-550b-a55b:free,cohere/north-mini-code:free,google/gemma-4-31b-it:free,poolside/laguna-m.1:free,openrouter/free"
-# Gemini's free tier is rate-limited (15-30 RPM) and slower to first token
-# (~24s per freellm.net's measurements) than the tiers above, so it sits last
-# in the chain — a safety net, not a first choice for interactive use.
-HOSTED_MODEL_GOOGLE = "gemini-3-1-flash-lite,gemini-3-5-flash"
+# Provider order: Google first (best speed×intelligence), NVIDIA NIM second, OpenRouter last.
+HOSTED_PROVIDER = "google,nvidia,openrouter"
+
+# Google — Gemini 3.5 Flash: 50.2 intelligence, 203 tps — best speed×quality balance overall.
+HOSTED_MODEL_GOOGLE = "gemini-3-5-flash,gemini-3-1-flash-lite"
+
+# NVIDIA NIM — ordered by intelligence×speed product; many fallbacks since NIM rotates models.
+# glm-5.2: 51 intel × 175 tps | minimax-m3: 44 × 100 | deepseek-v4-pro: 44 × 60
+# deepseek-v4-flash: 40 × 95 | nemotron-ultra: 38 × 167 | step-3.7-flash: 30 × 385
+# kimi-k2.6: 43 × 42 | nemotron-super: 25 × 332 | minimax-m2.7: 38 × 49 | qwen3.5-122b: 32 × 144
+HOSTED_MODEL_NVIDIA = "z-ai/glm-5.2,minimaxai/minimax-m3,deepseek-ai/deepseek-v4-pro,deepseek-ai/deepseek-v4-flash,nvidia/nemotron-3-ultra-550b-a55b,stepfun-ai/step-3.7-flash,moonshotai/kimi-k2.6,nvidia/nemotron-3-super-120b-a12b,minimaxai/minimax-m2.7,qwen/qwen3.5-122b-a10b"
+
+# OpenRouter free tier — last resort.
+HOSTED_MODEL_OPENROUTER = "nvidia/nemotron-3-ultra-550b-a55b:free,google/gemma-4-31b-it:free,openrouter/free"
