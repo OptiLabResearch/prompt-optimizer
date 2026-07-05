@@ -195,15 +195,11 @@ One primary action per state (Fable's rule): Optimize → Test Both / Copy.
 
 
 ### Phase 3 — Retention & conversion features
-1. **Library** (upgrade of existing History, still localStorage — no accounts):
-   named prompts, version chain per prompt (v1 → refined v2 → …), tags, search, re-open
-   into the optimizer. History log remains as "recent runs."
-2. **Test Bench elevation**: own view/anchor, verdict strip comparing the two responses
-   (length, structure, instruction-adherence heuristics), "save winner."
-3. **Sample/preset catalog**: 5–8 starter prompts (coding assistant, extractor, summarizer…)
-   for first-run users (gemini v2's presets, scoped down).
-4. **Optional export**: download prompt as `.md`/`.txt`/JSON (with variables schema) — cheap,
-   and serves the "port into my codebase" job.
+1. ✅ **Library** (upgrade of existing History, still localStorage — no accounts): named prompts, version chain per prompt (v1 → refined v2 → …), tags, search, re-open into the optimizer. History log remains as "recent runs."
+2. ✅ **Test Bench elevation**: own view/anchor, verdict strip comparing the two responses (length, structure, instruction-adherence heuristics), "save winner."
+3. ✅ **Sample/preset catalog**: 5–8 starter prompts (coding assistant, extractor, summarizer…) for first-run users (gemini v2's presets, scoped down).
+4. ✅ **Optional export**: download prompt as `.md`/`.txt`/JSON (with variables schema) — cheap, and serves the "port into my codebase" job.
+
 
 ### Deliberately NOT doing (rejected from the reviews)
 - **Accounts, workspaces, billing/pricing pages, team libraries** (GLM's IA) — fake chrome
