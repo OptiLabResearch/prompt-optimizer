@@ -5,6 +5,10 @@ compatibility_date = "2024-09-23"
 # Secrets (set via `wrangler pages secret put <NAME>`, not committed here):
 #   NVIDIA_API_KEY      — shared key for the hosted instance's free-tier fallback
 #   OPENROUTER_API_KEY  — shared key for the cross-provider fallback below
+#   GOOGLE_API_KEY      — shared key for the Gemini free-tier fallback below
+#                         (get one at aistudio.google.com; run:
+#                         `wrangler pages secret put GOOGLE_API_KEY`
+#                         and paste the key when prompted — never in this file)
 #
 # Plain vars for the hosted instance (safe to set in the Cloudflare dashboard):
 #   HOSTED_PROVIDER          = comma-separated provider list, tried in order
@@ -19,6 +23,12 @@ compatibility_date = "2024-09-23"
 # supply their own API key via the in-page Settings panel.
 
 [vars]
-HOSTED_PROVIDER = "nvidia,openrouter"
-HOSTED_MODEL = "z-ai/glm-5.2,minimaxai/minimax-m3,deepseek-ai/deepseek-v4-pro,moonshotai/kimi-k2.6,nvidia/nemotron-3-ultra-550b-a55b,deepseek-ai/deepseek-v4-flash"
-HOSTED_MODEL_OPENROUTER = "nvidia/nemotron-3-ultra-550b-a55b:free,google/gemma-4-31b-it:free,poolside/laguna-xs-2.1:free,cohere/north-mini-code:free,openrouter/free"
+HOSTED_PROVIDER = "nvidia,openrouter,google"
+# Ordered by IFBench (instruction-following) score, since that's what predicts
+# rewrite quality for this task — see choosing-a-model.md. Highest first.
+HOSTED_MODEL = "minimaxai/minimax-m3,nvidia/nemotron-3-ultra-550b-a55b,deepseek-ai/deepseek-v4-flash,deepseek-ai/deepseek-v4-pro,moonshotai/kimi-k2.6,z-ai/glm-5.1"
+HOSTED_MODEL_OPENROUTER = "nvidia/nemotron-3-ultra-550b-a55b:free,cohere/north-mini-code:free,google/gemma-4-31b-it:free,poolside/laguna-m.1:free,openrouter/free"
+# Gemini's free tier is rate-limited (15-30 RPM) and slower to first token
+# (~24s per freellm.net's measurements) than the tiers above, so it sits last
+# in the chain — a safety net, not a first choice for interactive use.
+HOSTED_MODEL_GOOGLE = "gemini-3-1-flash-lite,gemini-3-5-flash"
