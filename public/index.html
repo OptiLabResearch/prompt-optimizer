@@ -268,9 +268,7 @@
             border-radius: 18px;
             padding: 1.5rem;
             flex-grow: 1;
-            overflow-y: auto;
-            min-height: 420px;
-            max-height: calc(100vh - 260px);
+            min-height: 120px;
             font-size: 1.05rem;
             line-height: 1.6;
             white-space: pre-wrap;
@@ -330,19 +328,12 @@
         }
 
         .result-actions {
-            position: sticky;
-            top: -1.5rem;
-            margin: -1.5rem -1.5rem 0.75rem;
-            padding: 1rem 1.5rem 0.75rem;
-            z-index: 10;
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-end;
             align-items: center;
             gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 1rem;
         }
 
         .copy-btn {
@@ -1998,10 +1989,10 @@ Generate a query for: {{user_query}}`,
                     <button class="copy-btn diff-action" onclick="toggleDiffView()"><span class="btn-icon">🔀</span> Diff</button>
                     <button class="copy-btn primary-action test-action" onclick="showTestSection()"><span class="btn-icon">⚖️</span> Test Both</button>
                 </div>
-                <div class="result-stats" id="resultTokenEstimate" style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 1.25rem; text-align: right;"></div>
                 <div id="accordionContainer">
                     ${renderSectionsHtml()}
                 </div>
+                <div class="result-stats" id="resultTokenEstimate" style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 1rem; text-align: right;"></div>
                 <div class="explanation-card" id="explanationCardForGeneral" style="display: none; margin-top: 1rem; background: rgba(139, 92, 246, 0.04); border: 1px solid rgba(139, 92, 246, 0.15); border-left: 4px solid var(--accent-purple); border-radius: 12px; padding: 1rem; font-size: 0.85rem;"></div>
             `;
 
