@@ -2837,7 +2837,7 @@
               html += '<ul>';
               insideList = true;
             }
-            var content = line.substring(1).trim();
+            var content = escapeHtml(line.substring(1).trim());
             content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             html += '<li>' + content + '</li>';
           } else {
@@ -2845,7 +2845,8 @@
               html += '</ul>';
               insideList = false;
             }
-            var content2 = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            var content2 = escapeHtml(line);
+            content2 = content2.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             html += '<p style="margin-bottom: 0.5rem;">' + content2 + '</p>';
           }
         }
