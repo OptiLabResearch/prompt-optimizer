@@ -1720,6 +1720,7 @@
             <option value="google">Gemini</option>
             <option value="openrouter">OpenRouter</option>
             <option value="nvidia">NVIDIA</option>
+            <option value="groq">Groq</option>
             <option value="opencode-go">Opencode Go</option>
             <option value="opencode-zen">Opencode Zen</option>
             <option value="cloudflare">Cloudflare Workers AI</option>
@@ -2029,6 +2030,7 @@
         google: { model: 'gemini-3-5-flash' },
         openrouter: { model: 'nvidia/nemotron-3-ultra-550b-a55b:free' },
         nvidia: { model: 'minimaxai/minimax-m3' },
+        groq: { model: 'llama-3.3-70b-versatile' },
         'opencode-go': { model: 'opencode-go/kimi-k2.7-code' },
         'opencode-zen': { model: 'opencode/gpt-5.5' },
         cloudflare: { model: '@cf/meta/llama-3.1-8b-instruct' },
@@ -2126,6 +2128,9 @@
         } else if (provider === 'openrouter') {
           settingsFreeKeyHint.style.display = 'block';
           settingsFreeKeyHint.innerHTML = 'Need a key? Get a key at <a href="https://openrouter.ai/" target="_blank" style="color: var(--accent); text-decoration: underline;">OpenRouter</a> (many free-tier models are available).';
+        } else if (provider === 'groq') {
+          settingsFreeKeyHint.style.display = 'block';
+          settingsFreeKeyHint.innerHTML = 'Need a key? Get a key at the <a href="https://console.groq.com/" target="_blank" style="color: var(--accent); text-decoration: underline;">Groq Console</a> (generous free tier: 1000 requests/day).';
         } else {
           settingsFreeKeyHint.style.display = 'none';
         }

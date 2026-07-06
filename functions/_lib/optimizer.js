@@ -3,6 +3,12 @@
 // project can run standalone (no hermes-webui backend dependency).
 
 export const PROVIDER_PRESETS = {
+  groq: {
+    label: "Groq",
+    mode: "chat",
+    baseUrl: "https://api.groq.com/openai/v1",
+    defaultModel: "llama-3.3-70b-versatile",
+  },
   openrouter: {
     label: "OpenRouter",
     mode: "chat",

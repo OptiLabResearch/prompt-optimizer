@@ -23,8 +23,11 @@ compatibility_date = "2024-09-23"
 # supply their own API key via the in-page Settings panel.
 
 [vars]
-# Provider order: Google first (best speed×intelligence), NVIDIA NIM second, OpenRouter last.
-HOSTED_PROVIDER = "google,nvidia,openrouter"
+# Provider order: Groq first (best speed), Google second, NVIDIA NIM third, OpenRouter last.
+HOSTED_PROVIDER = "groq,google,nvidia,openrouter"
+
+# Groq — Llama 3.3 70B: excellent instruction following and extremely fast.
+HOSTED_MODEL_GROQ = "llama-3.3-70b-versatile,llama-3.1-8b-instant"
 
 # Google — Gemini 3.5 Flash: 50.2 intelligence, 203 tps — best speed×quality balance overall.
 HOSTED_MODEL_GOOGLE = "gemini-3-5-flash,gemini-3-1-flash-lite"
