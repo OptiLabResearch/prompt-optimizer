@@ -2603,19 +2603,20 @@
         var provider = settingsProvider.value;
         var needsBaseUrl = provider === 'custom' || provider === 'cloudflare';
 
-        settingsHostedModelGroup.style.display = 'flex';
-
         if (provider === 'hosted') { // Hosted fallback mode
+          settingsHostedModelGroup.style.display = 'flex';
           settingsApiKeyGroup.style.display = 'none';
           settingsModelGroup.style.display = 'none';
           settingsBaseUrlGroup.style.display = 'none';
           settingsFreeKeyHint.style.display = 'none';
         } else if (!provider) { // Bring your own API key placeholder (no provider chosen yet)
+          settingsHostedModelGroup.style.display = 'flex';
           settingsApiKeyGroup.style.display = 'none';
           settingsModelGroup.style.display = 'none';
           settingsBaseUrlGroup.style.display = 'none';
           settingsFreeKeyHint.style.display = 'none';
-        } else { // BYOK mode
+        } else { // BYOK mode: a specific provider is chosen, free-model picker is irrelevant
+          settingsHostedModelGroup.style.display = 'none';
           settingsBaseUrlGroup.style.display = needsBaseUrl ? 'flex' : 'none';
           settingsApiKeyGroup.style.display = 'flex';
           settingsModelGroup.style.display = 'flex';
