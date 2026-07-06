@@ -7,6 +7,8 @@ import {
   resolveProviderConfig,
   callCompletion,
   enforceHostedRateLimit,
+  validateImage,
+  buildUserContent,
 } from "../_lib/optimizer.js";
 
 export async function onRequestGet({ env }) {
@@ -43,6 +45,10 @@ export async function onRequestPost({ request, env }) {
   try {
     if (!String(body.api_key || "").trim()) await enforceHostedRateLimit(env, request);
     ({ systemPrompt, userText } = buildOptimizePrompt(body, rawPrompt));
+    if (body.image) {
+      validateImage(body.image);
+      userText = buildUserContent(userText, body.image);
+    }
     config = await resolveProviderConfig(body, env);
   } catch (e) {
     if (e instanceof ValidationError) return json({ ok: false, error: e.message }, 400);

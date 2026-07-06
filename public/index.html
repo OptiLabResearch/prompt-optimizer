@@ -1706,9 +1706,16 @@
           <div class="raw-prompt-meta">
             <button class="clear-btn" id="uploadBtn" title="Click to browse, or drag & drop a file onto the box above. Supported formats: .txt and .md">📎 Upload</button>
             <input type="file" id="rawPromptFileInput" accept=".txt,.md,text/plain,text/markdown" style="display:none;">
+            <button class="clear-btn" id="imageBtn" title="Attach an image (PNG, JPEG, WEBP, HEIC, HEIF — max 7MB). Only works with a vision-capable model, e.g. Gemini.">🖼️ Image</button>
+            <input type="file" id="imageFileInput" accept="image/png,image/jpeg,image/webp,image/heic,image/heif" style="display:none;">
             <button class="clear-btn" id="clearBtn">✕ Clear</button>
             <span class="mono" id="charCount">0 / 5000</span>
           </div>
+        </div>
+        <div class="raw-prompt-image-preview" id="imagePreview" style="display:none; align-items:center; gap:8px; padding:8px 16px; border-bottom:1px solid var(--border); font-size:12px; color:var(--text-mid);">
+          <img id="imagePreviewThumb" style="width:32px; height:32px; object-fit:cover; border-radius:4px; border:1px solid var(--border);">
+          <span id="imagePreviewName" style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
+          <button class="clear-btn" id="imageRemoveBtn" title="Remove image">✕</button>
         </div>
         <div class="raw-prompt-body">
           <textarea id="rawPrompt" maxlength="5000" placeholder="Paste or write your rough prompt here…"></textarea>
@@ -2351,6 +2358,7 @@
       clearBtn.addEventListener('click', function () {
         rawPrompt.value = '';
         updateInputState();
+        clearAttachedImage();
         rawPrompt.focus();
       });
 
@@ -3242,6 +3250,7 @@
           depth: state.quality,
           target_model: mapTarget(state.target),
           techniques: state.techniques.map(mapTechnique),
+          ...(attachedImage ? { image: attachedImage.dataUrl } : {}),
           ...providerFields()
         };
 
@@ -4620,6 +4629,56 @@
           if (rawPromptFileInput.files.length > 0) loadFileIntoPrompt(rawPromptFileInput.files[0]);
           rawPromptFileInput.value = '';
         });
+      }
+
+      // ---------- Image attachment (vision-capable models only, e.g. Gemini) ----------
+      var attachedImage = null; // { dataUrl, name }
+      var MAX_IMAGE_BYTES = 7 * 1024 * 1024;
+      var SUPPORTED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/heic', 'image/heif'];
+      var imageBtn = document.getElementById('imageBtn');
+      var imageFileInput = document.getElementById('imageFileInput');
+      var imagePreview = document.getElementById('imagePreview');
+      var imagePreviewThumb = document.getElementById('imagePreviewThumb');
+      var imagePreviewName = document.getElementById('imagePreviewName');
+      var imageRemoveBtn = document.getElementById('imageRemoveBtn');
+
+      function clearAttachedImage() {
+        attachedImage = null;
+        if (imagePreview) imagePreview.style.display = 'none';
+        if (imagePreviewThumb) imagePreviewThumb.src = '';
+      }
+
+      function loadImageIntoAttachment(file) {
+        if (!file) return;
+        if (SUPPORTED_IMAGE_TYPES.indexOf(file.type) === -1) {
+          alert('Unsupported image type. Please upload a PNG, JPEG, WEBP, HEIC, or HEIF file.');
+          return;
+        }
+        if (file.size > MAX_IMAGE_BYTES) {
+          alert('Image is too large (max 7 MB).');
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function (evt) {
+          attachedImage = { dataUrl: evt.target.result, name: file.name };
+          if (imagePreviewThumb) imagePreviewThumb.src = attachedImage.dataUrl;
+          if (imagePreviewName) imagePreviewName.textContent = file.name;
+          if (imagePreview) imagePreview.style.display = 'flex';
+        };
+        reader.readAsDataURL(file);
+      }
+
+      if (imageBtn && imageFileInput) {
+        imageBtn.addEventListener('click', function () {
+          imageFileInput.click();
+        });
+        imageFileInput.addEventListener('change', function () {
+          if (imageFileInput.files.length > 0) loadImageIntoAttachment(imageFileInput.files[0]);
+          imageFileInput.value = '';
+        });
+      }
+      if (imageRemoveBtn) {
+        imageRemoveBtn.addEventListener('click', clearAttachedImage);
       }
 
       renderOutputBody();

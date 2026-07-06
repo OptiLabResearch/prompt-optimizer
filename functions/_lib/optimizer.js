@@ -339,6 +339,37 @@ export function buildStandardPrompt(body, rawPrompt) {
   return { systemPrompt, userText: `Raw Prompt to Optimize:\n${rawPrompt}` };
 }
 
+// Vision support: matches Gemini 3.1 Flash-Lite's documented inline-upload
+// limits (7 MB, PNG/JPEG/WEBP/HEIC/HEIF) since it's the default hosted model;
+// other chat-mode providers with vision-capable models accept the same
+// OpenAI-style image_url content part.
+const SUPPORTED_IMAGE_MIME_TYPES = ["image/png", "image/jpeg", "image/webp", "image/heic", "image/heif"];
+const MAX_IMAGE_BYTES = 7 * 1024 * 1024;
+
+export function validateImage(dataUrl) {
+  const match = /^data:([^;]+);base64,(.+)$/s.exec(String(dataUrl || ""));
+  if (!match) throw new ValidationError("Image must be a base64 data URL.");
+  const mimeType = match[1].toLowerCase();
+  if (!SUPPORTED_IMAGE_MIME_TYPES.includes(mimeType)) {
+    throw new ValidationError(`Unsupported image type "${mimeType}". Supported: PNG, JPEG, WEBP, HEIC, HEIF.`);
+  }
+  const approxBytes = Math.ceil((match[2].length * 3) / 4);
+  if (approxBytes > MAX_IMAGE_BYTES) {
+    throw new ValidationError("Image is too large (max 7 MB).");
+  }
+}
+
+// Wraps userText into an OpenAI-style multimodal content array when an image
+// is attached; chat-mode providers accept content as either a plain string
+// or an array of {type, ...} parts, so this stays a drop-in replacement.
+export function buildUserContent(userText, image) {
+  if (!image) return userText;
+  return [
+    { type: "text", text: userText },
+    { type: "image_url", image_url: { url: image } },
+  ];
+}
+
 export function buildOptimizePrompt(body, rawPrompt) {
   const previousPrompt = String(body.previous_prompt || "").trim();
   const refinementInstruction = String(body.refinement_instruction || "").trim();
