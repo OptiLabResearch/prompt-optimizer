@@ -30,7 +30,7 @@ HOSTED_PROVIDER = "groq,google,nvidia,openrouter"
 HOSTED_MODEL_GROQ = "llama-3.3-70b-versatile,llama-3.1-8b-instant"
 
 # Google — Gemini 3.5 Flash: 50.2 intelligence, 203 tps — best speed×quality balance overall.
-HOSTED_MODEL_GOOGLE = "gemini-3-5-flash,gemini-3-1-flash-lite"
+HOSTED_MODEL_GOOGLE = "gemini-3.5-flash,gemini-3.1-flash-lite"
 
 # NVIDIA NIM — ordered by intelligence×speed product; many fallbacks since NIM rotates models.
 # glm-5.2: 51 intel × 175 tps | minimax-m3: 44 × 100 | deepseek-v4-pro: 44 × 60

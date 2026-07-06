@@ -25,7 +25,7 @@ export const PROVIDER_PRESETS = {
     label: "Google Gemini",
     mode: "chat",
     baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai",
-    defaultModel: "gemini-3-5-flash",
+    defaultModel: "gemini-3.5-flash",
   },
   openai: {
     label: "OpenAI",
@@ -550,6 +550,7 @@ export async function resolveProviderConfig(body, env) {
     const preset = PROVIDER_PRESETS[provider];
     if (!preset) return;
 
+    const cleanProviderName = provider.toUpperCase().replace(/[^A-Z0-9]/g, "_");
     const key = resolveKey(provider, env);
     if (!key) return;
 
