@@ -296,10 +296,10 @@
   }
 
   .options-body {
-    padding: 12px 16px;
+    padding: 16px 20px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px 14px;
+    gap: 16px 20px;
     background: var(--panel-inset);
     border-top: 1px solid var(--line);
     border-bottom-left-radius: 7px;
@@ -309,15 +309,15 @@
   .options-body.collapsed { display: none; }
 
   .field-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     color: var(--text-mut);
     display: flex;
     align-items: center;
-    gap: 5px;
-    margin-bottom: 6px;
+    gap: 6px;
+    margin-bottom: 8px;
   }
 
   .info-dot {
@@ -325,14 +325,21 @@
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    border: 1px solid var(--border-hover);
+    border: 1px solid var(--border);
+    background: var(--control);
     color: var(--text-mut);
-    font-size: 9.5px;
+    font-size: 9px;
     align-items: center;
     justify-content: center;
     text-transform: none;
     font-weight: 600;
     cursor: help;
+    transition: all 0.15s ease;
+  }
+  .info-dot:hover {
+    border-color: var(--border-hover);
+    background: var(--control-alt);
+    color: var(--text-soft);
   }
 
   /* ---------- Tooltips ---------- */
@@ -392,16 +399,18 @@
 
   .segmented {
     display: flex;
+    flex-wrap: wrap;
     background: var(--control);
     border-radius: 8px;
     padding: 3px;
-    font-size: 13px;
+    gap: 3px;
   }
 
   .segmented button {
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 80px;
     text-align: center;
-    padding: 6px 0;
+    padding: 8px 12px;
     border: none;
     background: transparent;
     border-radius: 6px;
@@ -409,13 +418,20 @@
     font-weight: 500;
     cursor: pointer;
     font-family: inherit;
+    font-size: 12.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    line-height: 1.2;
+    transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
   }
 
   .segmented button.active {
     background: var(--panel);
     color: var(--accent-deep);
     font-weight: 600;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   }
 
   .techniques-grid {
@@ -436,8 +452,13 @@
   .technique-item input { accent-color: var(--accent); width: 14px; height: 14px; }
 
   .technique-item span {
-    text-decoration: underline dotted var(--border-hover);
-    text-underline-offset: 3px;
+    text-decoration: none;
+    border-bottom: 1px dashed transparent;
+    transition: border-color 0.15s ease;
+  }
+
+  .technique-item:hover span {
+    border-bottom-color: var(--text-mut);
   }
 
   /* ---------- CTA ---------- */
