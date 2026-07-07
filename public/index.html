@@ -1845,7 +1845,7 @@
             <input type="file" id="rawPromptFileInput" accept=".txt,.md,text/plain,text/markdown" style="display:none;">
             <button class="clear-btn" id="imageBtn" title="Attach an image (PNG, JPEG, WEBP, HEIC, HEIF — max 7MB) to perform OCR and extract its text into the input box.">🖼️ Image</button>
             <input type="file" id="imageFileInput" accept="image/png,image/jpeg,image/webp,image/heic,image/heif" style="display:none;">
-            <button class="clear-btn" id="dictateBtn" title="Speak to dictate your prompt. Supports real-time browser speech or Groq Whisper (if configured).">🎤 Dictate</button>
+            <button class="clear-btn" id="dictateBtn" title="Speak to dictate your prompt using browser speech recognition.">🎤 Dictate</button>
             <button class="clear-btn" id="clearBtn">✕ Clear</button>
             <span class="mono" id="charCount">0 / 5000</span>
           </div>
@@ -1860,14 +1860,7 @@
             <span class="recording-pulse" id="dictatePulse" style="display:none;"></span>
             <span id="dictateStatus">Ready to dictate</span>
           </div>
-          <div class="dictate-level-container" id="dictateLevelContainer">
-            <div class="dictate-level-bar" id="dictateLevelBar"></div>
-          </div>
           <div class="dictate-controls">
-            <select id="dictateSourceSelect" class="dictate-select">
-              <option value="speech-api" selected>Browser (Real-time)</option>
-              <option value="whisper">Groq Whisper (STT)</option>
-            </select>
             <button class="dictate-btn-action record" id="dictateActionBtn">Record</button>
             <button class="clear-btn" id="dictateCloseBtn" title="Close dictation panel" style="margin-left:4px;">✕</button>
           </div>
@@ -5032,33 +5025,19 @@
       var dictatePanel = document.getElementById('dictatePanel');
       var dictatePulse = document.getElementById('dictatePulse');
       var dictateStatus = document.getElementById('dictateStatus');
-      var dictateLevelContainer = document.getElementById('dictateLevelContainer');
-      var dictateLevelBar = document.getElementById('dictateLevelBar');
-      var dictateSourceSelect = document.getElementById('dictateSourceSelect');
       var dictateActionBtn = document.getElementById('dictateActionBtn');
       var dictateCloseBtn = document.getElementById('dictateCloseBtn');
 
       var isRecording = false;
-      var mediaRecorder = null;
-      var audioChunks = [];
-      var audioCtx = null;
-      var analyser = null;
-      var dataArray = null;
-      var sourceNode = null;
-      var micStream = null;
-      var levelAnimationId = null;
 
       // Web Speech API references
       var recognition = null;
       var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-      // If browser doesn't support Web Speech API, default to Whisper and disable browser option
+      // If browser doesn't support Web Speech API, hide the dictate button
       if (!SpeechRecognition) {
-        var apiOption = dictateSourceSelect ? dictateSourceSelect.querySelector('option[value="speech-api"]') : null;
-        if (apiOption) {
-          apiOption.textContent = 'Browser (Unsupported)';
-          apiOption.disabled = true;
-          if (dictateSourceSelect) dictateSourceSelect.value = 'whisper';
+        if (dictateBtn) {
+          dictateBtn.style.display = 'none';
         }
       }
 
@@ -5070,7 +5049,7 @@
           if (isHidden) {
             dictateBtn.classList.add('active');
           } else {
-            stopDictationSession(true);
+            stopDictationSession();
             dictateBtn.classList.remove('active');
           }
         });
@@ -5078,7 +5057,7 @@
 
       if (dictateCloseBtn) {
         dictateCloseBtn.addEventListener('click', function () {
-          stopDictationSession(true);
+          stopDictationSession();
           if (dictatePanel) dictatePanel.style.display = 'none';
           if (dictateBtn) dictateBtn.classList.remove('active');
         });
@@ -5087,7 +5066,7 @@
       if (dictateActionBtn) {
         dictateActionBtn.addEventListener('click', function () {
           if (isRecording) {
-            stopDictationSession(false); // Stop and process
+            stopDictationSession();
           } else {
             startDictationSession();
           }
@@ -5095,26 +5074,17 @@
       }
 
       function startDictationSession() {
-        if (!dictateActionBtn || !dictateSourceSelect || !dictatePulse || !dictateLevelContainer || !dictateLevelBar || !dictateStatus) return;
-        var mode = dictateSourceSelect.value;
+        if (!dictateActionBtn || !dictatePulse || !dictateStatus) return;
         isRecording = true;
         dictateActionBtn.textContent = 'Stop';
         dictateActionBtn.className = 'dictate-btn-action stop';
         dictatePulse.style.display = 'inline-block';
-        dictateLevelContainer.style.display = 'block';
-        dictateLevelBar.style.width = '0%';
-        dictateLevelBar.classList.remove('transcribing');
-        dictateSourceSelect.disabled = true;
         dictateStatus.textContent = 'Listening...';
 
-        if (mode === 'speech-api') {
-          startBrowserSpeech();
-        } else {
-          startWhisperRecording();
-        }
+        startBrowserSpeech();
       }
 
-      function stopDictationSession(cancel) {
+      function stopDictationSession() {
         if (!isRecording) return;
         isRecording = false;
 
@@ -5123,50 +5093,14 @@
           dictateActionBtn.className = 'dictate-btn-action record';
         }
         if (dictatePulse) dictatePulse.style.display = 'none';
-        if (dictateSourceSelect) dictateSourceSelect.disabled = false;
 
-        // Stop micro level monitoring animation
-        if (levelAnimationId) {
-          cancelAnimationFrame(levelAnimationId);
-          levelAnimationId = null;
+        if (recognition) {
+          recognition.onend = null;
+          recognition.onerror = null;
+          recognition.onresult = null;
+          recognition.stop();
         }
-
-        // Close mic stream
-        if (micStream) {
-          micStream.getTracks().forEach(function (track) { track.stop(); });
-          micStream = null;
-        }
-
-        if (audioCtx && audioCtx.state !== 'closed') {
-          audioCtx.close();
-          audioCtx = null;
-        }
-
-        var mode = dictateSourceSelect ? dictateSourceSelect.value : 'speech-api';
-        if (mode === 'speech-api') {
-          if (recognition) {
-            recognition.onend = null;
-            recognition.onerror = null;
-            recognition.onresult = null;
-            recognition.stop();
-          }
-          if (dictateLevelContainer) dictateLevelContainer.style.display = 'none';
-          if (dictateStatus) dictateStatus.textContent = 'Ready to dictate';
-        } else {
-          if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-            mediaRecorder.stop();
-          }
-          if (cancel) {
-            audioChunks = [];
-            if (dictateLevelContainer) dictateLevelContainer.style.display = 'none';
-            if (dictateStatus) dictateStatus.textContent = 'Ready to dictate';
-          } else {
-            if (dictateStatus) dictateStatus.textContent = 'Transcribing audio...';
-            if (dictateLevelBar) dictateLevelBar.classList.add('transcribing');
-            if (dictateActionBtn) dictateActionBtn.disabled = true;
-            // Wait for mediaRecorder 'stop' event to finish and call uploadAudio
-          }
-        }
+        if (dictateStatus) dictateStatus.textContent = 'Ready to dictate';
       }
 
       function startBrowserSpeech() {
@@ -5210,178 +5144,20 @@
           recognition.onerror = function (event) {
             console.error('Speech recognition error:', event.error);
             if (dictateStatus) dictateStatus.textContent = 'Error: ' + event.error;
-            stopDictationSession(true);
+            stopDictationSession();
           };
 
           recognition.onend = function () {
-            stopDictationSession(true);
+            stopDictationSession();
           };
 
           recognition.start();
 
-          navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(function (stream) {
-              micStream = stream;
-              setupAudioAnalyser(stream);
-            })
-            .catch(function (err) {
-              console.warn('Could not monitor mic level:', err);
-            });
-
         } catch (e) {
           console.error(e);
           if (dictateStatus) dictateStatus.textContent = 'Speech recognition failed to start.';
-          stopDictationSession(true);
+          stopDictationSession();
         }
-      }
-
-      function startWhisperRecording() {
-        audioChunks = [];
-        navigator.mediaDevices.getUserMedia({ audio: true })
-          .then(function (stream) {
-            micStream = stream;
-            
-            var mimeType = 'audio/webm';
-            if (!MediaRecorder.isTypeSupported(mimeType)) {
-              mimeType = 'audio/ogg';
-            }
-            if (!MediaRecorder.isTypeSupported(mimeType)) {
-              mimeType = '';
-            }
-
-            var options = mimeType ? { mimeType: mimeType } : {};
-            mediaRecorder = new MediaRecorder(stream, options);
-
-            mediaRecorder.ondataavailable = function (event) {
-              if (event.data && event.data.size > 0) {
-                audioChunks.push(event.data);
-              }
-            };
-
-            mediaRecorder.onstop = function () {
-              var audioBlob = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
-              audioChunks = [];
-              uploadAudio(audioBlob);
-            };
-
-            mediaRecorder.start(250);
-            setupAudioAnalyser(stream);
-          })
-          .catch(function (err) {
-            console.error('Microphone access denied or failed:', err);
-            if (dictateStatus) dictateStatus.textContent = 'Mic permission denied.';
-            stopDictationSession(true);
-          });
-      }
-
-      function setupAudioAnalyser(stream) {
-        try {
-          var AudioContextClass = window.AudioContext || window.webkitAudioContext;
-          audioCtx = new AudioContextClass();
-          analyser = audioCtx.createAnalyser();
-          analyser.fftSize = 256;
-          
-          sourceNode = audioCtx.createMediaStreamSource(stream);
-          sourceNode.connect(analyser);
-
-          var bufferLength = analyser.frequencyBinCount;
-          dataArray = new Uint8Array(bufferLength);
-
-          function updateLevel() {
-            if (!isRecording) return;
-            levelAnimationId = requestAnimationFrame(updateLevel);
-            
-            analyser.getByteFrequencyData(dataArray);
-            var sum = 0;
-            for (var i = 0; i < bufferLength; i++) {
-              sum += dataArray[i];
-            }
-            var average = sum / bufferLength;
-            var levelPercent = Math.min(100, Math.round((average / 80) * 100));
-            if (dictateLevelBar) dictateLevelBar.style.width = levelPercent + '%';
-          }
-
-          updateLevel();
-        } catch (e) {
-          console.warn('Failed to set up visual audio analyser:', e);
-        }
-      }
-
-      function uploadAudio(blob) {
-        var formData = new FormData();
-        formData.append('file', blob, 'audio.webm');
-
-        var settings = loadSettings();
-        var stored = (settings.provider && settings.provider !== 'hosted') ? (settings.providerKeys[settings.provider] || {}) : {};
-        if (stored.apiKey && settings.provider !== 'hosted') {
-          formData.append('api_key', stored.apiKey);
-          formData.append('provider', settings.provider);
-          if (stored.model) formData.append('model', stored.model);
-          if (stored.baseUrl) formData.append('base_url', stored.baseUrl);
-        }
-
-        fetch('/api/transcribe', {
-          method: 'POST',
-          body: formData
-        })
-          .then(function (res) {
-            if (!res.ok) {
-              return res.json().then(function (err) {
-                throw new Error(err.error || 'Server error during transcription.');
-              });
-            }
-            return res.json();
-          })
-          .then(function (data) {
-            if (data && data.text) {
-              var text = data.text.trim();
-              if (text) {
-                var startPos = rawPrompt.selectionStart;
-                var endPos = rawPrompt.selectionEnd;
-                var originalText = rawPrompt.value;
-                
-                if (startPos !== undefined && endPos !== undefined) {
-                  var before = originalText.substring(0, startPos);
-                  var after = originalText.substring(endPos, originalText.length);
-                  
-                  if (before && !before.endsWith(' ')) before += ' ';
-                  if (after && !after.startsWith(' ')) after = ' ' + after;
-                  
-                  rawPrompt.value = before + text + after;
-                  
-                  var newPos = before.length + text.length;
-                  rawPrompt.selectionStart = newPos;
-                  rawPrompt.selectionEnd = newPos;
-                } else {
-                  if (originalText && !originalText.endsWith(' ')) {
-                    rawPrompt.value = originalText + ' ' + text;
-                  } else {
-                    rawPrompt.value = originalText + text;
-                  }
-                }
-                
-                updateInputState();
-                rawPrompt.focus();
-                if (dictateStatus) dictateStatus.textContent = 'Transcription complete!';
-              } else {
-                if (dictateStatus) dictateStatus.textContent = 'No speech detected.';
-              }
-            } else {
-              if (dictateStatus) dictateStatus.textContent = 'Transcription failed.';
-            }
-          })
-          .catch(function (err) {
-            console.error('STT upload failed:', err);
-            if (dictateStatus) dictateStatus.textContent = 'Error: ' + err.message;
-          })
-          .finally(function () {
-            if (dictateActionBtn) dictateActionBtn.disabled = false;
-            if (dictateLevelBar) {
-              dictateLevelBar.classList.remove('transcribing');
-              dictateLevelBar.style.width = '0%';
-            }
-            if (dictateLevelContainer) dictateLevelContainer.style.display = 'none';
-          });
       }
 
       renderOutputBody();
