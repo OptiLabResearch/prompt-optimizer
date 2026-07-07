@@ -5,7 +5,8 @@
   "description": "A standalone prompt-optimization tool: paste a rough prompt, get back a structured, model-tailored rewrite. Runs on Cloudflare Pages + Functions.",
   "scripts": {
     "dev": "wrangler pages dev public",
-    "deploy": "wrangler pages deploy public"
+    "deploy": "wrangler pages deploy public",
+    "test": "node run-tests.js"
   },
   "devDependencies": {
     "wrangler": "^3.90.0"

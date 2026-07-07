@@ -1,0 +1,14 @@
+# Cloudflare Pages Functions - Local Development Environment Variables
+# Copy this file to .dev.vars and populate with your API keys to run tests and host locally.
+
+# Groq API Key
+GROQ_API_KEY=
+
+# Google AI Studio API Key (Gemini)
+GOOGLE_API_KEY=
+
+# NVIDIA NIM API Key
+NVIDIA_API_KEY=
+
+# OpenRouter API Key
+OPENROUTER_API_KEY=
