@@ -73,10 +73,10 @@
     --line: rgba(0, 0, 0, 0.08);
     --border: rgba(0, 0, 0, 0.1);
     --border-hover: #c9c9c5;
-    --accent: oklch(0.62 0.17 285);
-    --accent-deep: oklch(0.5 0.17 285);
-    --accent-tint: oklch(0.62 0.17 285 / 0.07);
-    --accent-tint-strong: oklch(0.62 0.17 285 / 0.4);
+    --accent: oklch(0.60 0.22 250);
+    --accent-deep: oklch(0.48 0.22 250);
+    --accent-tint: oklch(0.60 0.22 250 / 0.07);
+    --accent-tint-strong: oklch(0.60 0.22 250 / 0.4);
     --gold-border: oklch(0.72 0.12 85 / 0.6);
     --gold-bg: oklch(0.72 0.12 85 / 0.1);
     --gold-text: oklch(0.55 0.12 80);
@@ -103,7 +103,7 @@
     --line: #1e2029;
     --border: #22242e;
     --border-hover: #34394a;
-    --accent-tint: oklch(0.62 0.17 285 / 0.12);
+    --accent-tint: oklch(0.60 0.22 250 / 0.12);
     --success-bg: oklch(0.62 0.15 155 / 0.12);
     --success-border: oklch(0.62 0.15 155 / 0.3);
     --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
@@ -521,7 +521,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(90deg, #2a5bd6, #38b6d6, #8b5cf6);
+    background: linear-gradient(90deg, oklch(0.55 0.24 250), oklch(0.65 0.22 230), oklch(0.72 0.18 200));
     color: #fff;
     font-size: 13px;
     font-weight: 600;
@@ -587,6 +587,12 @@
     color: var(--accent-deep);
     font-weight: 600;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+
+  .output-view-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
   .output-body {
@@ -1095,7 +1101,7 @@
 
   .bench-card.winner {
     border-color: var(--accent-tint-strong);
-    box-shadow: 0 0 0 3px oklch(0.62 0.17 285 / 0.07);
+    box-shadow: 0 0 0 3px oklch(0.60 0.22 250 / 0.07);
   }
   .bench-card.winner .bench-card-header { background: var(--accent-tint); }
   .bench-card.winner .bench-card-title { color: var(--accent-deep); }
@@ -1856,6 +1862,11 @@
       gap: 8px;
     }
 
+    .output-view-actions {
+      flex: 1 1 100%;
+      justify-content: space-between;
+    }
+
     /* Options body: change grid to single column */
     .options-body {
       grid-template-columns: 1fr !important;
@@ -2250,7 +2261,7 @@
       <div class="card output-card">
         <div class="card-header">
           <span class="card-header-title">Optimized result</span>
-          <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="output-view-actions">
             <div class="view-tabs" id="viewTabs">
               <button data-view="pretty" class="active">Structured</button>
               <button data-view="raw">Raw</button>
@@ -2745,7 +2756,11 @@
       var visitorId = localStorage.getItem(VISITOR_KEY);
       if (!visitorId) {
         visitorId = generateUUID();
-        localStorage.setItem(VISITOR_KEY, visitorId);
+        try {
+          localStorage.setItem(VISITOR_KEY, visitorId);
+        } catch (e) {
+          console.warn('Failed to save visitor ID to localStorage:', e);
+        }
       }
 
       var SESSION_KEY = 'prompt_optimizer_session_id';
@@ -2809,10 +2824,18 @@
         var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
         if (isDark) {
           document.documentElement.removeAttribute('data-theme');
-          localStorage.setItem(THEME_KEY, 'light');
+          try {
+            localStorage.setItem(THEME_KEY, 'light');
+          } catch (e) {
+            console.warn('Failed to save theme setting to localStorage:', e);
+          }
         } else {
           document.documentElement.setAttribute('data-theme', 'dark');
-          localStorage.setItem(THEME_KEY, 'dark');
+          try {
+            localStorage.setItem(THEME_KEY, 'dark');
+          } catch (e) {
+            console.warn('Failed to save theme setting to localStorage:', e);
+          }
         }
       });
 
@@ -2863,7 +2886,11 @@
       optionsToggle.addEventListener('click', function () {
         var isOpen = !optionsBody.classList.contains('collapsed');
         setOptionsOpen(!isOpen);
-        localStorage.setItem(OPTIONS_KEY, String(!isOpen));
+        try {
+          localStorage.setItem(OPTIONS_KEY, String(!isOpen));
+        } catch (e) {
+          console.warn('Failed to save options fold state to localStorage:', e);
+        }
       });
 
       // ---------- Tooltips (hover desktop / tap touch / keyboard) ----------
@@ -3095,7 +3122,11 @@
       }
 
       function saveSettingsObj(settings) {
-        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+        try {
+          localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+        } catch (e) {
+          console.warn('Failed to save settings to localStorage:', e);
+        }
       }
 
       function providerFields() {
@@ -4113,6 +4144,9 @@
         benchPanel.classList.add('open');
         benchPanel.setAttribute('aria-hidden', 'false');
         benchInput.focus();
+        // Reset Test Bench session library state to prevent silent library overwrites
+        benchLibraryEntryId = null;
+        setWinner(null);
       }
 
       function closeBench() {
