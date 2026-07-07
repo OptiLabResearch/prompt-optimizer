@@ -1,6 +1,6 @@
-# Prompt Optimizer
+# Promptimizer
 
-Live website: [https://promptoptimizer.optiqo.dev/](https://promptoptimizer.optiqo.dev/) · [📋 Public Roadmap](https://github.com/users/OptiLabResearch/projects/1/views/1)
+Live website: [https://promptimizer.optiqo.dev/](https://promptimizer.optiqo.dev/) · [📋 Public Roadmap](https://github.com/users/OptiLabResearch/projects/1/views/1)
 
 Paste a rough prompt, get back a structured, model-tailored rewrite — with chain-of-thought, few-shot, and XML technique toggles, per-target-model guidance (Claude, GPT, Gemini, or local), iterative refinement, a word-diff view, and a before/after test run against the raw vs. optimized prompt.
 
@@ -10,7 +10,7 @@ Runs entirely on Cloudflare Pages + Pages Functions. No database, no build step 
 
 ## 🔍 How It Works
 
-Prompt Optimizer takes a user's rough prompt and applies advanced prompt engineering principles to rewrite it into a highly structured, model-tailored version. Under the hood, it performs the following steps:
+Promptimizer takes a user's rough prompt and applies advanced prompt engineering principles to rewrite it into a highly structured, model-tailored version. Under the hood, it performs the following steps:
 
 1. **Meta-Prompting:** Uses optimized system instructions to guide an LLM to critique and restructure your prompt.
 2. **Technique Toggles:** Users can toggle advanced prompting techniques such as:
@@ -32,8 +32,8 @@ Prompt Optimizer takes a user's rough prompt and applies advanced prompt enginee
 ### Local Setup
 1. **Clone this repository:**
    ```bash
-   git clone https://github.com/OptiLabResearch/prompt-optimizer.git
-   cd prompt-optimizer
+   git clone https://github.com/OptiLabResearch/promptimizer.git
+   cd promptimizer
    ```
 2. **Install dependencies:**
    ```bash
@@ -93,7 +93,7 @@ functions/_lib/optimizer.js                 Shared prompt-building & LLM provide
 
 ## 🤝 Contributing
 
-We welcome contributions to Prompt Optimizer! Here are some ways you can help:
+We welcome contributions to Promptimizer! Here are some ways you can help:
 - **Optimize Templates:** Improve the prompt optimization templates located in `functions/_lib/optimizer.js`.
 - **Add Model Guidelines:** Update target model-specific rules to match the latest best practices.
 - **UI/UX Enhancements:** Suggest and implement improvements to the frontend user interface in `public/index.html`.

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://promptoptimizer.optiqo.dev/sitemap.xml
+Sitemap: https://promptimizer.optiqo.dev/sitemap.xml

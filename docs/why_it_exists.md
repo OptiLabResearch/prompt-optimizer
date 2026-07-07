@@ -1,6 +1,6 @@
-# Why Prompt Optimizer Exists & Who It's For
+# Why Promptimizer Exists & Who It's For
 
-Prompt Optimizer is designed to bridge the gap between human intent and AI execution. Writing prompts that get consistent, high-quality results from large language models (LLMs) is difficult and counter-intuitive. This tool automates that process using modern prompt-engineering principles.
+Promptimizer is designed to bridge the gap between human intent and AI execution. Writing prompts that get consistent, high-quality results from large language models (LLMs) is difficult and counter-intuitive. This tool automates that process using modern prompt-engineering principles.
 
 ## Who it is for
 
@@ -10,7 +10,7 @@ Prompt Optimizer is designed to bridge the gap between human intent and AI execu
 
 ## What job it does
 
-Prompt Optimizer takes a rough, conversational, or disorganized prompt and transforms it into a structured, highly reliable instruction set tailored for the LLM of your choice.
+Promptimizer takes a rough, conversational, or disorganized prompt and transforms it into a structured, highly reliable instruction set tailored for the LLM of your choice.
 
 It implements:
 - Clean sectioning (Role, Context, Task, Constraints, Output Format).

@@ -130,7 +130,7 @@ const TECHNIQUE_GUIDELINES = {
 export class ValidationError extends Error {}
 export class RateLimitError extends Error {}
 
-const RATE_LIMIT_CACHE_PREFIX = "https://prompt-optimizer.local/ratelimit-";
+const RATE_LIMIT_CACHE_PREFIX = "https://promptimizer.local/ratelimit-";
 const RATE_LIMIT_MINUTE_WINDOW_SECONDS = 60;
 const RATE_LIMIT_MINUTE_MAX = 5;
 const RATE_LIMIT_HOUR_WINDOW_SECONDS = 3600;
@@ -478,7 +478,7 @@ function keyFingerprint(key) {
 // would overwrite the whole blob's TTL, letting a later short mute (e.g. 10m
 // for a timeout) truncate an earlier long one (e.g. 24h for a bad key).
 function circuitCacheUrl(provider, model, keyTag) {
-  return `https://prompt-optimizer.local/circuit/${encodeURIComponent(provider)}/${encodeURIComponent(model)}/${encodeURIComponent(keyTag)}`;
+  return `https://promptimizer.local/circuit/${encodeURIComponent(provider)}/${encodeURIComponent(model)}/${encodeURIComponent(keyTag)}`;
 }
 
 async function getCircuitStatus(provider, model, keyTag) {
@@ -521,7 +521,7 @@ async function muteModelInCircuit(provider, model, durationSeconds, keyTag) {
 }
 
 async function fetchActiveModelsForProvider(provider, baseUrl, apiKey) {
-  const cacheUrl = `https://prompt-optimizer.local/catalog-cache-${provider}`;
+  const cacheUrl = `https://promptimizer.local/catalog-cache-${provider}`;
   
   try {
     if (typeof caches !== "undefined" && caches.default) {

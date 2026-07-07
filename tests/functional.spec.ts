@@ -64,8 +64,8 @@ async function takeScreenshot(page: Page, testName: string, suffix: string) {
   console.log(`Screenshot saved: ${filePath}`);
 }
 
-test.describe('Prompt Optimizer Live Web App Tests', () => {
-  const LIVE_URL = 'https://promptoptimizer.optiqo.dev/';
+test.describe('Promptimizer Live Web App Tests', () => {
+  const LIVE_URL = 'https://promptimizer.optiqo.dev/';
 
   test.beforeEach(async ({ page }) => {
     // Clear localStorage/sessionStorage to have a clean state for each test
@@ -421,9 +421,12 @@ test.describe('Prompt Optimizer Live Web App Tests', () => {
     
     await page.evaluate(() => {
       const btn = document.getElementById('benchRun') as HTMLButtonElement;
-      // Dispatch 3 click events consecutively in the same macro-task loop
+      // Dispatch 3 click events consecutively, re-enabling the button in between
+      // to ensure all 3 clicks are processed regardless of browser-level disabled checks
       btn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      btn.removeAttribute('disabled');
       btn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      btn.removeAttribute('disabled');
       btn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
@@ -452,7 +455,7 @@ test.describe('Prompt Optimizer Live Web App Tests', () => {
     console.log('Picked Winner A for Prompt 1');
 
     // Check library state in localStorage
-    let library = await page.evaluate(() => JSON.parse(localStorage.getItem('promptOptimizerLibrary') || '[]'));
+    let library = await page.evaluate(() => JSON.parse(localStorage.getItem('promptimizerLibrary') || '[]'));
     console.log('Library entries after first save:', library.length);
     expect(library.length).toBe(1);
     const firstSavedId = library[0].id;
@@ -480,7 +483,7 @@ test.describe('Prompt Optimizer Live Web App Tests', () => {
     console.log('Picked Winner B for Prompt 2');
 
     // Check library state in localStorage
-    library = await page.evaluate(() => JSON.parse(localStorage.getItem('promptOptimizerLibrary') || '[]'));
+    library = await page.evaluate(() => JSON.parse(localStorage.getItem('promptimizerLibrary') || '[]'));
     console.log('Library entries after second save:', library.length);
     
     // Verify if firstSavedId is still in the library

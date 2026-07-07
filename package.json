@@ -1,5 +1,5 @@
 {
-  "name": "prompt-optimizer",
+  "name": "promptimizer",
   "private": true,
   "version": "1.0.0",
   "description": "A standalone prompt-optimization tool: paste a rough prompt, get back a structured, model-tailored rewrite. Runs on Cloudflare Pages + Functions.",

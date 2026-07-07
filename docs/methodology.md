@@ -1,6 +1,6 @@
 # Methodology: How to Prompt-Optimize
 
-Prompt Optimizer applies a strict set of 2026-era prompt-engineering rules to rewrite prompts. These guidelines are compiled directly from research by Anthropic, OpenAI, and Google.
+Promptimizer applies a strict set of 2026-era prompt-engineering rules to rewrite prompts. These guidelines are compiled directly from research by Anthropic, OpenAI, and Google.
 
 ## Core Optimization Principles
 

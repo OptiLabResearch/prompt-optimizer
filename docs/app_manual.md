@@ -1,6 +1,6 @@
 # App Manual: Controls & Features
 
-This guide explains how to use each control in the Prompt Optimizer interface to fine-tune your results.
+This guide explains how to use each control in the Promptimizer interface to fine-tune your results.
 
 ## Configuration Controls
 

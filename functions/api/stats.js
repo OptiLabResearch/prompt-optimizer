@@ -352,7 +352,7 @@ function renderHtmlDashboard(metrics, showPublicWarning, token) {
     <html lang="en">
     <head>
       <meta charset="UTF-8">
-      <title>Insights &amp; Stats Dashboard — Prompt Optimizer</title>
+      <title>Insights &amp; Stats Dashboard — Promptimizer</title>
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -574,7 +574,7 @@ function renderHtmlDashboard(metrics, showPublicWarning, token) {
 
         <header>
           <div>
-            <h1>Prompt Optimizer</h1>
+            <h1>Promptimizer</h1>
             <div style="font-size:0.9rem; color: var(--text-mut); margin-top: 0.25rem;">Analytics &amp; Success Insights Dashboard</div>
           </div>
           <div class="period-badge">${metrics.period}</div>
@@ -677,7 +677,7 @@ function renderHtmlDashboard(metrics, showPublicWarning, token) {
         </div>
 
         <footer>
-          <div>Prompt Optimizer Insights &bull; Powered by Cloudflare Workers Analytics Engine</div>
+          <div>Promptimizer Insights &bull; Powered by Cloudflare Workers Analytics Engine</div>
         </footer>
       </div>
     </body>
