@@ -1064,12 +1064,11 @@
     width: 420px;
     max-width: 100%;
     max-height: calc(100vh - 32px);
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     transform: translateY(8px);
     transition: transform 0.2s ease-out;
-  }
-  #settingsModal .modal-panel {
-    overflow: visible;
   }
   .modal-scrim.open .modal-panel { transform: translateY(0); }
 
@@ -1096,6 +1095,8 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
+    overflow-y: auto;
+    flex: 1;
   }
 
   .modal-footer {
@@ -1103,6 +1104,36 @@
     display: flex;
     gap: 10px;
     justify-content: flex-end;
+  }
+
+  /* ---------- Guide Modal Classes ---------- */
+  .guide-modal-body {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    min-height: 480px;
+    max-height: 70vh;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .guide-tabs {
+    width: 200px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 12px;
+    background: var(--panel-inset);
+    flex-shrink: 0;
+  }
+
+  .guide-content-container {
+    flex-grow: 1;
+    padding: 20px 24px;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.6;
   }
 
   .form-field { display: flex; flex-direction: column; gap: 6px; }
@@ -1746,6 +1777,39 @@
     .techniques-grid {
       grid-template-columns: 1fr !important;
     }
+
+    /* Mobile Guide Modal styling */
+    .guide-modal-body {
+      flex-direction: column !important;
+      min-height: 350px !important;
+    }
+
+    .guide-tabs {
+      width: 100% !important;
+      flex-direction: row !important;
+      border-right: none !important;
+      border-bottom: 1px solid var(--border) !important;
+      padding: 8px 12px !important;
+      gap: 8px !important;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+    }
+
+    .guide-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .guide-tab-btn {
+      padding: 6px 12px !important;
+      font-size: 12px !important;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .guide-content-container {
+      padding: 16px 20px !important;
+    }
   }
 
   /* ---------- Guide Modal & Content Styles ---------- */
@@ -2358,9 +2422,9 @@
         <span class="modal-title">📖 User Guide</span>
         <button class="modal-close" id="guideClose" aria-label="Close">✕</button>
       </div>
-      <div class="modal-body" style="display: flex; flex-direction: row; gap: 0; min-height: 480px; max-height: 70vh; padding: 0;">
+      <div class="guide-modal-body">
         <!-- Left tabs sidebar -->
-        <div class="guide-tabs" style="width: 200px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; padding: 16px 12px; background: var(--panel-inset); flex-shrink: 0;">
+        <div class="guide-tabs">
           <button class="guide-tab-btn active" data-guide-tab="why">Why Prompt Optimizer</button>
           <button class="guide-tab-btn" data-guide-tab="methodology">Methodology</button>
           <button class="guide-tab-btn" data-guide-tab="models">Recommended Models</button>
@@ -2368,7 +2432,7 @@
           <button class="guide-tab-btn" data-guide-tab="faq">FAQ &amp; Security</button>
         </div>
         <!-- Right content view -->
-        <div class="guide-content-container" style="flex-grow: 1; padding: 20px 24px; overflow-y: auto; font-size: 14px; line-height: 1.6;">
+        <div class="guide-content-container">
           <div class="guide-tab-content" id="guideTab_why">
             <h1>Why Prompt Optimizer Exists &amp; Who It's For</h1>
             <p>Prompt Optimizer is designed to bridge the gap between human intent and AI execution. Writing prompts that get consistent, high-quality results from large language models (LLMs) is difficult and counter-intuitive. This tool automates that process using modern prompt-engineering principles.</p>
